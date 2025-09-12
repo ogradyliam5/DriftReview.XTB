@@ -239,7 +239,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DriftSettings.cs" />
     <Compile Include="Models\DriftModels.cs" />
     <Compile Include="MyPlugin.cs" />
     <Compile Include="DriftReviewControl.cs">

@@ -40,6 +40,9 @@ namespace DriftReview.XTB.Services
       <attribute name='uniquename' />
       <attribute name='friendlyname' />
     </link-entity>
+    <link-entity name='systemuser' from='systemuserid' to='modifiedby' alias='usr' link-type='outer'>
+      <attribute name='fullname' />
+    </link-entity>
   </entity>
 </fetch>";
 
@@ -51,14 +54,20 @@ namespace DriftReview.XTB.Services
                 var objectId = e.GetAttributeValue<Guid?>("objectid") ?? Guid.Empty;
                 var compType = e.GetAttributeValue<OptionSetValue>("componenttype")?.Value ?? 0;
 
+                // Prefer fullname fetched from systemuser over EntityReference.Name (often null)
+                var hydratedName = e.GetAttributeValue<AliasedValue>("usr.fullname")?.Value as string;
+                var name = (hydratedName ?? modifiedBy?.Name ?? string.Empty).Trim();
+
                 if (modifiedBy != null)
                 {
-                    // Exclusion by userId
+                    // Exclusion by userId (reliable)
                     if (excludedUserIds != null && excludedUserIds.Contains(modifiedBy.Id))
                         continue;
-                    // Exclusion by display name (best-effort; sometimes Name not populated)
-                    var name = (modifiedBy.Name ?? string.Empty).Trim();
-                    if (!string.IsNullOrEmpty(name) && excludedNamesCI != null && excludedNamesCI.Contains(name.ToLowerInvariant()))
+
+                    // Exclusion by display name (now reliable because we hydrated fullname)
+                    if (!string.IsNullOrEmpty(name) &&
+                        excludedNamesCI != null &&
+                        excludedNamesCI.Contains(name.ToLowerInvariant()))
                         continue;
                 }
 
@@ -66,7 +75,7 @@ namespace DriftReview.XTB.Services
                 {
                     ModifiedOnUtc = modifiedOn,
                     ModifiedById = modifiedBy?.Id ?? Guid.Empty,
-                    ModifiedByName = modifiedBy?.Name ?? "",
+                    ModifiedByName = name, // use hydrated fullname when available
                     ModifiedByType = "user",
                     ComponentType = compType,
                     ComponentTypeName = ComponentTypes.Name(compType),
