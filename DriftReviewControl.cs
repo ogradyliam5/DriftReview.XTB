@@ -109,16 +109,38 @@ namespace DriftReview.XTB
             grid.DataSource = null;
             grid.Columns.Clear();
 
+            // Prevent automatic creation of columns from the DataSource.
+            grid.AutoGenerateColumns = false;
+
             grid.Columns.Add("modifiedon", "modifiedon");
+            grid.Columns["modifiedon"].DataPropertyName = "modifiedon";
+
             grid.Columns.Add("modifiedbyname", "modifiedbyname");
+            grid.Columns["modifiedbyname"].DataPropertyName = "modifiedbyname";
+
             grid.Columns.Add("modifiedbytype", "modifiedbytype");
+            grid.Columns["modifiedbytype"].DataPropertyName = "modifiedbytype";
+
             grid.Columns.Add("componentname", "componentname");
+            grid.Columns["componentname"].DataPropertyName = "componentname";
+
             grid.Columns.Add("componenttypename", "componenttypename");
+            grid.Columns["componenttypename"].DataPropertyName = "componenttypename";
+
             grid.Columns.Add("componenttype", "componenttype");
+            grid.Columns["componenttype"].DataPropertyName = "componenttype";
+
             grid.Columns.Add("objectid", "objectid");
+            grid.Columns["objectid"].DataPropertyName = "objectid";
+
             grid.Columns.Add("solutionfriendlyname", "solutionfriendlyname");
+            grid.Columns["solutionfriendlyname"].DataPropertyName = "solutionfriendlyname";
+
             grid.Columns.Add("solutionuniquename", "solutionuniquename");
+            grid.Columns["solutionuniquename"].DataPropertyName = "solutionuniquename";
+
             grid.Columns.Add("resolvedby", "resolvedby");
+            grid.Columns["resolvedby"].DataPropertyName = "resolvedby";
         }
 
         private void BindRows(DataTable dt)
